@@ -7,19 +7,19 @@ const env = require("../helpers/env");
 require("../validator/mnemonic");
 exports.register = async (req, res) => {
   try {
-    const { username, password } = req.body;
-    // Check if username already exists
-    const userExists = await User.findOne({ where: { username } });
+    const { email, password } = req.body;
+    // Check if email already exists
+    const userExists = await User.findOne({ where: { email } });
     if (userExists) {
       return res
         .status(400)
-        .json({ errors: [{ username: "Username already exists." }] });
+        .json({ errors: [{ email: "Email already exists." }] });
     }
     let rules = {
-      username: "required|alpha_dash|min:3|max:16",
+      email: "required|email",
       password: "required|min:6",
     };
-    let validation = new Validator({ username, password }, rules);
+    let validation = new Validator({ email, password }, rules);
 
     if (validation.fails()) {
       return res.status(400).json({ errors: validation.errors.all() });
@@ -28,7 +28,7 @@ exports.register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const hasedmnemonic = await bcrypt.hash(mnemonic, 10);
     const user = await User.create({
-      username,
+      email,
       password: hashedPassword,
       mnemonic: hasedmnemonic,
     });
@@ -45,23 +45,23 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     let rules = {
-      username: "required|alpha_dash|min:3|max:16",
+      email: "required|email",
       password: "required|min:6",
     };
-    let validation = new Validator({ username, password }, rules);
+    let validation = new Validator({ email, password }, rules);
 
     if (validation.fails()) {
       return res.status(400).json({ errors: validation.errors.all() });
     }
-    const user = await User.findOne({ where: { username } });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(400).send({ message: "Invalid username or password." });
+      return res.status(400).send({ message: "Invalid email or password." });
     }
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
-      return res.status(400).send({ message: "Invalid username or password." });
+      return res.status(400).send({ message: "Invalid email or password." });
     }
     const token = jwt.sign({ id: user.id }, env("JWT_SECRET"), {
       expiresIn: "1h",
@@ -73,26 +73,26 @@ exports.login = async (req, res) => {
 };
 exports.forgotPassword = async (req, res) => {
   try {
-    const { username, password, mnemonic } = req.body;
+    const { email, password, mnemonic } = req.body;
     let rules = {
-      username: "required|alpha_dash|min:3|max:16",
+      email: "required|email",
       password: "required|min:6",
       mnemonic: "required|mnemonic:12",
     };
-    let validation = new Validator({ username, password, mnemonic }, rules);
+    let validation = new Validator({ email, password, mnemonic }, rules);
 
     if (validation.fails()) {
       return res.status(400).json({ errors: validation.errors.all() });
     }
-    const user = await User.findOne({ where: { username } });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(400).send({ message: "Invalid username." });
+      return res.status(400).send({ message: "Invalid email." });
     }
     await bcrypt
       .compare(mnemonic, user.mnemonic)
       .then(async () => {
         const newPassword = await bcrypt.hash(password, 10);
-        await User.update({ password: newPassword }, { where: { username } });
+        await User.update({ password: newPassword }, { where: { email } });
         res.send({ message: "Password reset successful!" });
       })
       .catch((err) => {

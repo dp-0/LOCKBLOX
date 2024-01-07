@@ -10,7 +10,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      username: {
+      email: {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
@@ -38,4 +38,3 @@ module.exports = {
     await queryInterface.dropTable("users");
   },
 };
-//7c19e2ab8a2fce4dd4fa039392008b964fedb6de

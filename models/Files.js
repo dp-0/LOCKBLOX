@@ -2,23 +2,26 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Folder = require("./Folder");
 
-const User = sequelize.define("User", {
-  email: {
+const File = sequelize.define("File", {
+  folderId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Folder,
+      key: "id",
+    },
+    allowNull: false,
+  },
+  fileName: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
   },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  mnemonic: {
+  filePath: {
     type: DataTypes.STRING,
     allowNull: false,
   },
 });
-User.hasMany(Folder, {
-  foreignKey: "userId",
-  as: "folders",
+File.belongsTo(Folder, {
+  foreignKey: "folderId",
+  as: "folder",
 });
-module.exports = User;
+module.exports = File;

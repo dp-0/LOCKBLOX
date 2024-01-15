@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken");
-const env = require("../helpers/env");
+import jwt from "jsonwebtoken";
+import env from "../helpers/env.js";
 
-module.exports = (req, res, next) => {
+export const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
 
   const token = authHeader && authHeader.split(" ")[1];

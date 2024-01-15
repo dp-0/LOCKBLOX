@@ -1,5 +1,7 @@
-require("dotenv").config();
+import dotenv from "dotenv";
 
-module.exports = function (key) {
+dotenv.config();
+
+export default function (key) {
   return process.env[key];
-};
+}

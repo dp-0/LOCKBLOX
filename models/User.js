@@ -1,6 +1,6 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-const Folder = require("./Folder");
+import { DataTypes } from "sequelize";
+import sequelize from "../config/database.js";
+import Folder from "./Folder.js";
 
 const User = sequelize.define("User", {
   email: {
@@ -17,8 +17,10 @@ const User = sequelize.define("User", {
     allowNull: false,
   },
 });
+
 User.hasMany(Folder, {
   foreignKey: "userId",
   as: "folders",
 });
-module.exports = User;
+
+export default User;

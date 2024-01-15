@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
+import apiRoutes from "./routes/api.js";
+
 const app = express();
-const apiRoutes = require("./routes/api");
 app.use(express.json());
 
 app.use("/api", apiRoutes);

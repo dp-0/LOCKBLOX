@@ -1,10 +1,11 @@
-const express = require("express");
-const multer = require("multer");
+import express from "express";
+import multer from "multer";
+import * as UserController from "../controller/UserController.js";
+import { authenticateToken } from "../middleware/tokenVerify.js";
+import * as FileUploadController from "../controller/FileUploadController.js";
+import storage from "../helpers/storage.js";
+
 const router = express.Router();
-const UserController = require("../controller/UserController");
-const authenticateToken = require("../middleware/tokenVerify");
-const FileUploadController = require("../controller/FileUploadController");
-const storage = require("../helpers/storage");
 
 // User Registration Route
 router.post("/register", UserController.register);
@@ -19,15 +20,16 @@ router.post("/reset-password", UserController.forgotPassword);
 router.get("/dashboard", authenticateToken, (req, res) => {
   res.send("Dashboard accessed!");
 });
-//create folder
+
+// Create folder
 router.post(
   "/folder/create",
   authenticateToken,
   FileUploadController.createFolder
 );
 
-//upload file
-const upload = multer({ storage: storage });
+// Upload file
+const upload = multer({ storage });
 router.post(
   "/file/upload",
   upload.single("file"),
@@ -35,4 +37,4 @@ router.post(
   FileUploadController.fileUpload
 );
 
-module.exports = router;
+export default router;

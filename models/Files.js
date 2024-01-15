@@ -1,6 +1,6 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-const Folder = require("./Folder");
+import { DataTypes } from "sequelize";
+import sequelize from "../config/database.js";
+import Folder from "./Folder.js";
 
 const File = sequelize.define("File", {
   folderId: {
@@ -19,9 +19,19 @@ const File = sequelize.define("File", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  cid: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  size: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
 });
+
 File.belongsTo(Folder, {
   foreignKey: "folderId",
   as: "folder",
 });
-module.exports = File;
+
+export default File;

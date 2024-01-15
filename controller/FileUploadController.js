@@ -1,9 +1,10 @@
-const Validator = require("validatorjs");
-const { v4: uuidv4 } = require("uuid");
-const Folder = require("../models/Folder");
-const Files = require("../models/Files");
-
-exports.createFolder = async (req, res) => {
+import Validator from "validatorjs";
+import Folder from "../models/Folder.js";
+import Files from "../models/Files.js";
+import addFileToIpfs from "../helpers/AddFileToIpfs.js";
+import placeStorageOrder from "../helpers/PinCidToCrustNetwork.js";
+import fs from "fs";
+export const createFolder = async (req, res) => {
   try {
     const { path, name } = req.body;
 
@@ -49,7 +50,7 @@ exports.createFolder = async (req, res) => {
   }
 };
 
-exports.fileUpload = async (req, res) => {
+export const fileUpload = async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "No files were uploaded." });
   }
@@ -68,6 +69,12 @@ exports.fileUpload = async (req, res) => {
     return res.status(200).json({ message: "Path does not exist" });
   }
   try {
+    if (!fs.existsSync(file.path)) {
+      return res.status(400).json({ message: "File does not exist." });
+    }
+    const fileContent = fs.readFileSync(file.path);
+    const { cid, size } = await addFileToIpfs(fileContent);
+    await placeStorageOrder(cid, size);
     const fileModel = await Files.create({
       folderId: folder.id,
       fileName: file.originalname,

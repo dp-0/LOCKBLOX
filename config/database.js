@@ -1,16 +1,26 @@
-require("dotenv").config();
-const Sequelize = require("sequelize");
-const env = require("../helpers/env");
-const config = require("./config.json")[env("APP_ENV")];
+import dotenv from "dotenv";
+import Sequelize from "sequelize";
+import env from "../helpers/env.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from 'url';
+
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const rawConfig = fs.readFileSync(path.join(__dirname, "./config.json"));
+const config = JSON.parse(rawConfig);
 
 const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  {
-    host: config.host,
-    dialect: config.dialect,
-  }
+ config[env("APP_ENV")].database,
+ config[env("APP_ENV")].username,
+ config[env("APP_ENV")].password,
+ {
+  host: config[env("APP_ENV")].host,
+  dialect: config[env("APP_ENV")].dialect,
+ }
 );
 
-module.exports = sequelize;
+export default sequelize;

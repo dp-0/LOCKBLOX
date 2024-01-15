@@ -1,6 +1,7 @@
-const multer = require("multer");
-const { v4: uuidv4 } = require("uuid");
-const fs = require("fs");
+import multer from "multer";
+import { v4 as uuidv4 } from "uuid";
+import fs from "fs";
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     // Specify the destination directory based on user or other criteria
@@ -22,4 +23,5 @@ const storage = multer.diskStorage({
     cb(null, fullFileName);
   },
 });
-module.exports = storage;
+
+export default storage;

@@ -1,4 +1,4 @@
-const Validator = require("validatorjs");
+import Validator from "validatorjs";
 
 Validator.register(
   "mnemonic",
@@ -10,3 +10,5 @@ Validator.register(
   },
   "The :attribute must have exactly :mnemonic words."
 );
+
+export default Validator;

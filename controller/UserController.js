@@ -1,11 +1,12 @@
-const User = require("../models/User");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const Validator = require("validatorjs");
-const bip39 = require("bip39");
-const env = require("../helpers/env");
-require("../validator/mnemonic");
-exports.register = async (req, res) => {
+import User from "../models/User.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import Validator from "validatorjs";
+import bip39 from "bip39";
+import env from "../helpers/env.js";
+import mnemonicValidator from "../validator/mnemonic.js";
+
+export const register = async (req, res) => {
   try {
     const { email, password } = req.body;
     // Check if email already exists
@@ -43,7 +44,7 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     let rules = {
@@ -71,7 +72,7 @@ exports.login = async (req, res) => {
     res.status(500).send({ message: "Error occurred while logging in." });
   }
 };
-exports.forgotPassword = async (req, res) => {
+export const forgotPassword = async (req, res) => {
   try {
     const { email, password, mnemonic } = req.body;
     let rules = {

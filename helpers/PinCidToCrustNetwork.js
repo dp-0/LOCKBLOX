@@ -10,7 +10,7 @@ const api = new ApiPromise({
 });
 async function placeStorageOrder(fileCid, fileSize) {
   // 1. Construct place-storage-order tx
-  const tips = 0;
+  const tips = 1;
   // If it's a folder, please set memo = 'folder'
   const memo = "";
   const tx = api.tx.market.placeStorageOrder(fileCid, fileSize, tips, memo);

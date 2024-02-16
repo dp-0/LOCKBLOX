@@ -79,6 +79,8 @@ export const fileUpload = async (req, res) => {
       folderId: folder.id,
       fileName: file.originalname,
       filePath: `uploads/${file.filename}`,
+      cid: cid,
+      size: size,
     });
 
     res.status(200).json({ message: "File Uploaded", File: fileModel });
